@@ -11,7 +11,7 @@ public class Controller : MonoBehaviour
 
 	private RandomText generator;
 
-	private string[] textContent;
+	private string[] currentText;
 	private int index;
 
 	private string[] words = new string[] { "ik", "hallo", "je", "het", "een", "goed", "van", "en", "is", "voor",
@@ -33,9 +33,10 @@ public class Controller : MonoBehaviour
 
 		generator = new RandomText(words);
 		generator.AddContentParagraphs(1, 1, 1, 100, 1000);
-		
-		textField.text = generator.Content;
-		textContent = generator.Content.Split(' ');
+
+		currentText = generator.Content.Split(' ');
+		currentText[index] = "<b>" + currentText[index] + "</b>";
+		textField.text = string.Join(" ", currentText);
 	}
 
 	char Validate(char c)
@@ -50,17 +51,19 @@ public class Controller : MonoBehaviour
 
 	void Submit()
 	{
-		string[] currentText = textField.text.Split(' ');
+		currentText = textField.text.Split(' ');
 
 		// Check if the typed text is the same as the shown text.
-		if (inputField.text == textContent[index])
+		if (inputField.text == currentText[index].Replace("<b>", string.Empty).Replace("</b>", string.Empty))
 		{
-			currentText[index] = "<color=green>" + currentText[index] + "</color>";
+			currentText[index] = "<color=green>" + currentText[index].Replace("<b>", string.Empty).Replace("</b>", string.Empty) + "</color>";
 		}
 		else
 		{
-			currentText[index] = "<color=red>" + currentText[index] + "</color>";
+			currentText[index] = "<color=red>" + currentText[index].Replace("<b>", string.Empty).Replace("</b>", string.Empty) + "</color>";
 		}
+
+		currentText[index + 1] = "<b>" + currentText[index + 1] + "</b>";
 
 		textField.text = string.Join(" ", currentText);
 		index++;
