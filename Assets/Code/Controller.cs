@@ -11,7 +11,8 @@ public class Controller : MonoBehaviour
 
 	private RandomText generator;
 
-	private string[] currentText;
+	private string[] originalText;
+	private string[] shownText;
 	private int index;
 
 	private string[] words = new string[] { "ik", "hallo", "je", "het", "een", "goed", "van", "en", "is", "voor",
@@ -34,9 +35,10 @@ public class Controller : MonoBehaviour
 		generator = new RandomText(words);
 		generator.AddContentParagraphs(1, 1, 1, 100, 1000);
 
-		currentText = generator.Content.Split(' ');
-		currentText[index] = "<b>" + currentText[index] + "</b>";
-		textField.text = string.Join(" ", currentText);
+		originalText = generator.Content.Split(' ');
+		shownText = (string[])originalText.Clone();
+		shownText[index] = "<b>" + shownText[index] + "</b>";
+		textField.text = string.Join(" ", shownText);
 	}
 
 	char Validate(char c)
@@ -51,22 +53,23 @@ public class Controller : MonoBehaviour
 
 	void Submit()
 	{
-		currentText = textField.text.Split(' ');
+		shownText = textField.text.Split(' ');
 
-		// Check if the typed text is the same as the shown text.
-		if (inputField.text == currentText[index].Replace("<b>", string.Empty).Replace("</b>", string.Empty))
+		// Check if the typed word is the same as the corresponding word.
+		if (inputField.text == originalText[index])
 		{
-			currentText[index] = "<color=green>" + currentText[index].Replace("<b>", string.Empty).Replace("</b>", string.Empty) + "</color>";
+			shownText[index] = "<color=green>" + originalText[index] + "</color>";
 		}
 		else
 		{
-			currentText[index] = "<color=red>" + currentText[index].Replace("<b>", string.Empty).Replace("</b>", string.Empty) + "</color>";
+			shownText[index] = "<color=red>" + originalText[index] + "</color>";
 		}
 
-		currentText[index + 1] = "<b>" + currentText[index + 1] + "</b>";
+		// Highlight next word.
+		shownText[index + 1] = "<b>" + originalText[index + 1] + "</b>";
+		textField.text = string.Join(" ", shownText);
 
-		textField.text = string.Join(" ", currentText);
 		index++;
-		inputField.text = "";
+		inputField.text = string.Empty;
 	}
 }
