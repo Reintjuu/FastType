@@ -92,6 +92,7 @@ public class Controller : MonoBehaviour
 		inputField.gameObject.SetActive(false);
 		started = false;
 
+		// Calculate correct WPM: http://www.speedtypingonline.com/typing-equations
 		Debug.Log("WPM: " + correctWords);
 	}
 }
