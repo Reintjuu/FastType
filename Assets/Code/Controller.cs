@@ -8,12 +8,15 @@ public class Controller : MonoBehaviour
 	private InputField inputField;
 	[SerializeField]
 	private Text textField;
+	[SerializeField]
+	private Countdown timer;
 
 	private RandomText generator;
 
 	private string[] originalText;
 	private string[] shownText;
 	private int index;
+	private bool started;
 
 	private string[] words = new string[] { "ik", "hallo", "je", "het", "een", "goed", "van", "en", "is", "voor",
 											"dat", "met", "in", "zijn", "mooi", "jij", "de", "leuk", "niet", "mijn",
@@ -30,7 +33,8 @@ public class Controller : MonoBehaviour
 	void Start ()
 	{
 		index = 0;
-		inputField.onValidateInput += delegate(string input, int charIndex, char addedChar) { return Validate(addedChar); };
+		started = false;
+		timer.setText("1:00.00");
 
 		generator = new RandomText(words);
 		generator.AddContentParagraphs(1, 1, 1, 100, 1000);
@@ -39,10 +43,18 @@ public class Controller : MonoBehaviour
 		shownText = (string[])originalText.Clone();
 		shownText[index] = "<b>" + shownText[index] + "</b>";
 		textField.text = string.Join(" ", shownText);
+
+		inputField.onValidateInput += delegate(string input, int charIndex, char addedChar) { return Validate(addedChar); };
 	}
 
 	char Validate(char c)
 	{
+		if(!started)
+		{
+			started = true;
+			timer.StartCountdown(0, 1, 0, OnCountdownEnd);
+		}
+
 		if (c == ' ')
 		{
 			c = '\0';
@@ -71,5 +83,11 @@ public class Controller : MonoBehaviour
 
 		index++;
 		inputField.text = string.Empty;
+	}
+
+	void OnCountdownEnd()
+	{
+		started = false;
+		Debug.Log("Finished");
 	}
 }
