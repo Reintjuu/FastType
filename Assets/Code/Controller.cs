@@ -16,6 +16,7 @@ public class Controller : MonoBehaviour
 	private string[] originalText;
 	private string[] shownText;
 	private int index;
+	private int correctWords;
 	private bool started;
 
 	private string[] words = new string[] { "ik", "hallo", "je", "het", "een", "goed", "van", "en", "is", "voor",
@@ -71,6 +72,7 @@ public class Controller : MonoBehaviour
 		if (inputField.text == originalText[index])
 		{
 			shownText[index] = "<color=green>" + originalText[index] + "</color>";
+			correctWords++;
 		}
 		else
 		{
@@ -87,7 +89,9 @@ public class Controller : MonoBehaviour
 
 	void OnCountdownEnd()
 	{
+		inputField.gameObject.SetActive(false);
 		started = false;
-		Debug.Log("Finished");
+
+		Debug.Log("WPM: " + correctWords);
 	}
 }
