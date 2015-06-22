@@ -43,17 +43,17 @@ public class Countdown : MonoBehaviour
 		{
 			// Get the elapsed time as a TimeSpan value.
 			TimeSpan ts = countFrom - stopWatch.Elapsed;
-			if (ts.TotalMilliseconds <= 0)
+			if (ts.TotalMilliseconds > 0)
+			{
+				string elapsedTime = String.Format("{0:0}:{1:00}.{2:00}", ts.Minutes, ts.Seconds, ts.Milliseconds / 10);
+				setText(elapsedTime);
+			}
+			else
 			{
 				cb();
 				stopWatch.Stop();
 				setText("0:00.00");
 			}
-
-			// Format and display the TimeSpan value. 
-			string elapsedTime = String.Format("{0:0}:{1:00}.{2:00}", ts.Minutes, ts.Seconds, ts.Milliseconds / 10);
-
-			textField.text = elapsedTime;
 		}
 	}
 }

@@ -42,7 +42,7 @@ public class Controller : MonoBehaviour
 
 		originalText = generator.Content.Split(' ');
 		shownText = (string[])originalText.Clone();
-		shownText[index] = "<b>" + shownText[index] + "</b>";
+		shownText[index] = "<color=black>" + shownText[index] + "</color>";
 		textField.text = string.Join(" ", shownText);
 
 		inputField.onValidateInput += delegate(string input, int charIndex, char addedChar) { return Validate(addedChar); };
@@ -80,7 +80,7 @@ public class Controller : MonoBehaviour
 		}
 
 		// Highlight next word.
-		shownText[index + 1] = "<b>" + originalText[index + 1] + "</b>";
+		shownText[index + 1] = "<color=black>" + originalText[index + 1] + "</color>";
 		textField.text = string.Join(" ", shownText);
 
 		index++;
