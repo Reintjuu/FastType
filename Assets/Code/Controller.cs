@@ -10,13 +10,16 @@ public class Controller : MonoBehaviour
 	private Text textField;
 	[SerializeField]
 	private Countdown timer;
+	[SerializeField]
+	private int minutes;
 
 	private RandomText generator;
 
 	private string[] originalText;
 	private string[] shownText;
 	private int index;
-	private int correctWords;
+	private int corrects;
+	private int errors;
 	private bool started;
 
 	private string[] words = new string[] { "ik", "hallo", "je", "het", "een", "goed", "van", "en", "is", "voor",
@@ -35,7 +38,7 @@ public class Controller : MonoBehaviour
 	{
 		index = 0;
 		started = false;
-		timer.setText("1:00.00");
+		timer.setText(minutes + ":00.00");
 
 		generator = new RandomText(words);
 		generator.AddContentParagraphs(1, 1, 1, 100, 1000);
@@ -53,11 +56,13 @@ public class Controller : MonoBehaviour
 		if(!started)
 		{
 			started = true;
-			timer.StartCountdown(0, 1, 0, OnCountdownEnd);
+			timer.StartCountdown(0, minutes, 0, OnCountdownEnd);
 		}
 
+		// Check if a space is entered...
 		if (c == ' ')
 		{
+			// ... if it is, replace it with an empty char.
 			c = '\0';
 			Submit();
 		}
@@ -72,12 +77,17 @@ public class Controller : MonoBehaviour
 		if (inputField.text == originalText[index])
 		{
 			shownText[index] = "<color=green>" + originalText[index] + "</color>";
-			correctWords++;
+
+			// We're including spaces, so add 1 to the amount of correct inputs.
+			corrects += originalText[index].Length + 1;
 		}
 		else
 		{
 			shownText[index] = "<color=red>" + originalText[index] + "</color>";
+			errors += originalText[index].Length + 1;
 		}
+
+		print("Corrects: " + corrects + ", Errors: " + errors + ", WPM: " + GrossWPM(corrects, minutes));
 
 		// Highlight next word.
 		shownText[index + 1] = "<color=black>" + originalText[index + 1] + "</color>";
@@ -89,10 +99,21 @@ public class Controller : MonoBehaviour
 
 	void OnCountdownEnd()
 	{
-		inputField.gameObject.SetActive(false);
+		inputField.DeactivateInputField();
+		inputField.interactable = false;
 		started = false;
 
-		// Calculate correct WPM: http://www.speedtypingonline.com/typing-equations
-		Debug.Log("WPM: " + correctWords);
+		print("Corrects: " + corrects + ", Errors: " + errors + ", WPM: " + GrossWPM(corrects, minutes));
+	}
+
+	// Calculate WPM: http://www.speedtypingonline.com/typing-equations
+	float NetWPM(int correctEntries, int incorrectEntries, int timeInMinutes)
+	{
+		return ((correctEntries / 5) - incorrectEntries) / timeInMinutes; 
+	}
+
+	float GrossWPM(int correctEntries, int timeInMinutes)
+	{
+		return (correctEntries / 5) / timeInMinutes;
 	}
 }
